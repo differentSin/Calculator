@@ -105,8 +105,10 @@
         text-align: left;
         background-color: lightsalmon;
         width: 100%;
+    }
 
-
+    input {
+        margin-bottom: 10px;
     }
 </style>
 
@@ -134,15 +136,12 @@
     const buttons = document.querySelectorAll('button');
     
 
-    if (!display.textContent) {
-        display.textContent = guide;
-    }    
+    
+    display.textContent = guide; 
 
     buttons.forEach(button => {
         button.addEventListener('click', () => {
-            if (display.textContent === '' || display.textContent === guide) {
-                display.textContent = ''; // Clear the guide before adding any new input
-            }
+            
 
             //display everything that is being input, except the equal sign
             //if (button.id != '=') {
@@ -227,7 +226,6 @@
     );
 
     //keyboard support using math.js evaluate
-    
     const inputValue = document.querySelector('input').value;
     const input = document.querySelector('input');
     input.addEventListener('keydown', (event) => {
