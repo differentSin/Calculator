@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>The Calculator</h1>
+    
+    <div class="container">
+        <div class="display"></div>
+        <input></input>
+        <div class="buttons">
+            
+            <div class="number">
+                
+                <button id="1">1</button>
+                <button id="2">2</button>
+                <button id="3">3</button>
+                <button id="4">4</button>
+                <button id="5">5</button>
+                <button id="6">6</button>
+                <button id="7">7</button>
+                <button id="8">8</button>
+                <button id="9">9</button>
+            </div>
+            
+            <div class="operator">
+                <div class="0=">
+                    <button id="0" value="0">0</button>
+                    <button id="=">=</button>
+                    
+                </div>
+                <div class="main">
+                    <button id="+">+</button>
+                    <button id="/">/</button>
+                    <button id="-">-</button>
+                    <button id="*">*</button>
+                </div>
+            </div>
+            
+
+        </div>
+        <div class="test"></div>
+        <div class="testoper"></div>
+        <div class="result">Result: </div>
+    </div>
+</body>
+
+<style>
+    .number {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        
+    }
+
+    .operator {
+        display: flex;
+        flex-direction: column-reverse;
+        flex-wrap: wrap;
+        width: 80px;
+        align-items: center;
+        gap: 0px 0px;
+        text-align: center;
+        
+    }
+
+    html {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background-color: darkcyan;
+    }
+    
+    .buttons {
+        display: flex;
+        height: 60px;
+        align-items: center;
+        justify-content: center;
+    }
+    button {
+        width: 25px;
+        text-align: center;
+    }
+    .number {
+        width: 75px;   
+    }
+
+
+    .display {
+        background-color: lightgray;
+        border: 2px solid black;
+        width: 100%; /* Shorten the width by 20px */
+        margin-right: 10px;
+        margin-bottom: 10px;;
+    }
+    .result {
+        margin-top: 10px;
+        
+        text-align: left;
+        background-color: lightsalmon;
+        width: 100%;
+
+
+    }
+</style>
+
+<script type="module">
+    
+
+    let arrayNumber = [];
+    let operand1 = "";
+    let arrayTotal = [];
+    let operator;
+    let final;
+    let operators = {
+        '+': (a, b) => a + b,
+        '-': (a, b) => a - b,
+        '*': (a, b) => a * b,
+        '/': (a, b) => a / b
+        };
+    let iteration = 0;
+    let guide = 'esc: reset, backspace: delete';
+
+    const result = document.querySelector('.result');
+    const display = document.querySelector('.display');
+    const test = document.querySelector('.test');
+    const testoper = document.querySelector('.testoper');
+    const buttons = document.querySelectorAll('button');
+    
+
+    if (!display.textContent) {
+        display.textContent = guide;
+    }    
+
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            if (display.textContent === '' || display.textContent === guide) {
+                display.textContent = ''; // Clear the guide before adding any new input
+            }
+
+            //display everything that is being input, except the equal sign
+            //if (button.id != '=') {
+            //    display.textContent += button.id;    
+            //}
+
+            if (button.id != '+' && button.id != '-' && button.id != '/' && button.id != '*' && button.id != '=' && button.id != 'esc') {
+                operand1 += button.id;
+                input.value += button.id;
+            } else if (button.id === '+' || button.id === '-' || button.id === '/' || button.id === '*') {
+                    if (iteration > 0) { //when the user hit the second operator and onward
+                        input.value += button.id;
+                        arrayNumber.push(Number(operand1));
+                        final = arrayNumber.reduce((acc,curr) => {
+                            return operators[operator](acc, curr);});
+                        arrayTotal.push(final);
+                        
+                        //if the user hit the second operator, the Result will display the arrayNumber total
+                        if (arrayTotal.length > 1) {
+                            result.textContent = 'Result: ' + arrayNumber.reduce((acc,curr) => {
+                                return operators[operator](acc, curr);}).toFixed(4);
+                        } else {
+                            result.textContent = 'Result: ' + arrayTotal[0].toFixed(4);
+                        }
+
+                        //testoper.textContent = 'arrayNumber: ' + arrayNumber.join();
+                        arrayNumber = [];
+                        arrayNumber.push(final);
+                        operator = button.id;
+                        operand1 = '';
+                    } else { //when the user hit the first operator
+                        operator = button.id;
+                        input.value += button.id;
+                        //push all operand1 value to arrayNumber array
+                        arrayNumber.push(Number(operand1));
+                        
+                        
+                        //testoper.textContent = 'arrayNumber: ' + arrayNumber.join();
+                        ++iteration;
+                        operand1 = '';
+                    }
+            } else if (button.id === '=') { //if the user hit =, result will display immediately
+                arrayNumber.push(Number(operand1));
+
+                final = arrayNumber.reduce((acc,curr) => {
+                    return operators[operator](acc, curr);});
+                arrayTotal.push(final);
+                
+                
+                if (arrayTotal.length > 1) {
+                    result.textContent = 'Result: ' + eval(input.value);
+                } else {
+                    result.textContent = 'Result: ' + arrayTotal[0].toFixed(4);
+                }
+                //testoper.textContent = 'arrayNumber: ' + arrayNumber.join();
+                arrayNumber = [];
+                arrayNumber.push(final);
+                operator = button.id;
+                operand1 = '';
+            }
+
+            //test.textContent = 'operand1: ' + operand1;
+        })})
+        
+    
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+                iteration = 0;
+                arrayNumber = [];
+                arrayTotal = [];
+                operator = '';
+                operand1 = '';
+                final = '';
+                display.textContent = '';
+                result.textContent = 'Result: ';
+                //testoper.textContent = 'arrayNumber: ';
+                if (!display.textContent || display.textContent === guide) {
+                    display.textContent = guide;  // Reset the display text
+                }
+            }
+        }
+    );
+
+    //keyboard support using math.js evaluate
+    
+    const inputValue = document.querySelector('input').value;
+    const input = document.querySelector('input');
+    input.addEventListener('keydown', (event) => {
+        if (event.key == 'Enter') {
+            result.textContent = 'Result: ' + eval(input.value);
+        } else if (event.key == 'Backspace') {
+            inputValue = inputValue.slice(0,-1);
+        }
+        
+    });
+    
+</script>
+</html>
